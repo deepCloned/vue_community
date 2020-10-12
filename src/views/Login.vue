@@ -11,34 +11,44 @@
           </li>
         </ul>
       </div>
-      <form class="layui-form login-content" action="">
+      <form class="layui-form login-content">
         <div class="layui-form-item">
           <label class="layui-form-label label-center">用户名</label>
-          <div class="layui-input-inline">
-            <input
-              type="text"
-              required
-              lay-verify="required"
-              placeholder="请输入邮箱"
-              autocomplete="off"
-              class="layui-input"
-            />
-          </div>
-          <div class="layui-form-mid layui-word-aux">辅助文字</div>
+          <ValidationProvider rules="required|email" v-slot="{ errors }">
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                required
+                v-model="email"
+                lay-verify="required"
+                placeholder="请输入邮箱"
+                autocomplete="off"
+                class="layui-input"
+              />
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+              <span class="error_desc">{{ errors[0] }}</span>
+            </div>
+          </ValidationProvider>
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label label-center">密码</label>
-          <div class="layui-input-inline">
-            <input
-              type="password"
-              required
-              lay-verify="required"
-              placeholder="请输入密码"
-              autocomplete="off"
-              class="layui-input"
-            />
-          </div>
-          <div class="layui-form-mid layui-word-aux">辅助文字</div>
+          <ValidationProvider rules="password" v-slot="{ errors }">
+            <div class="layui-input-inline">
+              <input
+                type="password"
+                required
+                v-model="password"
+                lay-verify="required"
+                placeholder="请输入密码"
+                autocomplete="off"
+                class="layui-input"
+              />
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+              <span class="error_desc">{{ errors[0] }}</span>
+            </div>
+          </ValidationProvider>
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label label-center">验证码</label>
@@ -46,16 +56,17 @@
             <input
               type="text"
               required
+              v-model="code"
               lay-verify="required"
               placeholder="请输入验证码"
               autocomplete="off"
               class="layui-input"
             />
           </div>
-          <div class="layui-form-mid layui-word-aux">{{ a }}</div>
+          <div class="layui-form-mid layui-word-aux"></div>
         </div>
         <div class="layui-form-item">
-          <div class="layui-input-block">
+          <div class="layui-input-block operation">
             <button class="layui-btn" lay-submit lay-filter="formDemo">
               登录
             </button>
@@ -74,7 +85,9 @@ export default {
   name: 'Login',
   data () {
     return {
-      a: '789'
+      email: '',
+      password: '',
+      code: ''
     }
   }
 }
@@ -111,6 +124,12 @@ export default {
         margin-top: 15px;
         .label-center{
           text-align: center;
+        }
+        .error_desc{
+          color: red;
+        }
+        .operation{
+          margin-left: 30px;
         }
       }
     }

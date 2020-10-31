@@ -14,7 +14,7 @@
       <form class="layui-form login-content">
         <div class="layui-form-item">
           <label class="layui-form-label label-center">用户名</label>
-          <ValidationProvider rules="required|email" v-slot="{ errors }">
+          <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
             <div class="layui-input-inline">
               <input
                 type="text"
@@ -33,7 +33,7 @@
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label label-center">密码</label>
-          <ValidationProvider rules="password" v-slot="{ errors }">
+          <ValidationProvider name="password" rules="required|password" v-slot="{ errors }">
             <div class="layui-input-inline">
               <input
                 type="password"
@@ -52,18 +52,22 @@
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label label-center">验证码</label>
-          <div class="layui-input-inline">
-            <input
-              type="text"
-              required
-              v-model="code"
-              lay-verify="required"
-              placeholder="请输入验证码"
-              autocomplete="off"
-              class="layui-input"
-            />
-          </div>
-          <div class="layui-form-mid layui-word-aux"></div>
+          <ValidationProvider name="code" rules="required" v-slot="{ errors }">
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                required
+                v-model="code"
+                lay-verify="required"
+                placeholder="请输入验证码"
+                autocomplete="off"
+                class="layui-input"
+              />
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+              <span class="error_desc">{{ errors[0] }}</span>
+            </div>
+          </ValidationProvider>
         </div>
         <div class="layui-form-item">
           <div class="layui-input-block operation">

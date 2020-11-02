@@ -85,15 +85,35 @@
 </template>
 
 <script>
+import auth from '@/model/auth';
+import { v4 as uuidv4 } from 'uuid';
 export default {
   name: 'Login',
   data () {
     return {
       email: '',
       password: '',
-      code: ''
+      code: '',
+      sid: '',
     }
-  }
+  },
+  methods: {
+    getCode() {
+      this.getSid()
+      console.log(this.sid)
+    },
+    // 获取 uuid
+    getSid() {
+      if (localStorage.getItem('sid')) {
+        this.sid = localStorage.getItem('sid')
+      } else {
+        const sid = uuidv4()
+        localStorage.setItem('sid', sid)
+        this.sid = sid
+      }
+    }
+  },
+  created() {}
 }
 </script>
 

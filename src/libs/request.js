@@ -1,12 +1,11 @@
-import axios from 'axios';
+import axios from 'axios'
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/v1/' : '/'
 axios.defaults.timeout = 10000
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 axios.interceptors.request.use(config => {
-  const token = localStorage.getItem('token') || '';
-  return config;
+  return config
 }, error => {
   return Promise.reject(error)
 })
@@ -25,11 +24,11 @@ axios.interceptors.response.use(response => {
       // 401 未登录
       case 401:
         console.log('未登录')
-        break;
+        break
       // 403 禁止访问
       case 403:
         console.log('禁止访问')
-        break;
+        break
     }
     return Promise.reject(error.response)
   }
@@ -41,7 +40,7 @@ axios.interceptors.response.use(response => {
 export const get = (url, params) => {
   return new Promise((resolve, reject) => {
     axios.get(url, {
-      params,
+      params
     }).then(res => {
       resolve(res.data)
     }).catch(err => {
@@ -73,10 +72,4 @@ export const put = (url, data) => {
       reject(err.data)
     })
   })
-}
-
-export {
-  get,
-  post,
-  put,
 }

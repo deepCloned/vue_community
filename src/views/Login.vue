@@ -64,6 +64,7 @@
                 class="layui-input"
               />
             </div>
+            <div @click="getCode" v-html="svgData" class="svg-data"></div>
             <div class="layui-form-mid layui-word-aux">
               <span class="error_desc">{{ errors[0] }}</span>
             </div>
@@ -85,25 +86,58 @@
 </template>
 
 <script>
-import auth from '@/model/auth';
-import { v4 as uuidv4 } from 'uuid';
+import auth from '@/model/auth'
+import { v4 as uuidv4 } from 'uuid'
 export default {
   name: 'Login',
   data () {
     return {
-      email: '',
-      password: '',
+      email: '1583526343@qq.com',
+      password: '123123111',
       code: '',
       sid: '',
+      svgData: ''
     }
   },
   methods: {
-    getCode() {
+    getCode () {
       this.getSid()
       console.log(this.sid)
+      const params = {
+        sid: this.sid
+      }
+      auth.getCode(params).then(res => {
+        console.log(res)
+        this.code = res.data.text
+        this.svgData = res.data.data
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // get login
+    postLogin () {
+      const requestData = {
+        email: this.email,
+        password: this.password,
+        code: this.code,
+        sid: this.sid
+      }
+      auth.postLogin(requestData).then(res => {
+        console.log(res)
+        localStorage.removeItem('sid')
+        if (res.code === '0000') {
+          console.log('登录成功')
+        } else {
+          console.log(res.msg)
+          this.getSid()
+          this.getCode()
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     // 获取 uuid
-    getSid() {
+    getSid () {
       if (localStorage.getItem('sid')) {
         this.sid = localStorage.getItem('sid')
       } else {
@@ -113,7 +147,12 @@ export default {
       }
     }
   },
-  created() {}
+  created () {
+    this.getCode()
+    setTimeout(() => {
+      this.postLogin()
+    }, 10000)
+  }
 }
 </script>
 
@@ -154,6 +193,11 @@ export default {
         }
         .operation{
           margin-left: 30px;
+        }
+        .svg-data{
+          position: relative;
+          top: -10px;
+          cursor: pointer;
         }
       }
     }

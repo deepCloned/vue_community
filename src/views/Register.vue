@@ -14,7 +14,26 @@
       <form class="layui-form login-content">
         <div class="layui-form-item">
           <label class="layui-form-label label-center">用户名</label>
-          <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
+          <ValidationProvider name="username" rules="required" v-slot="{ errors }">
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                required
+                v-model="username"
+                lay-verify="required"
+                placeholder="请输入用户名"
+                autocomplete="off"
+                class="layui-input"
+              />
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+              <span class="error_desc">{{ errors[0] }}</span>
+            </div>
+          </ValidationProvider>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label label-center">用户名</label>
+          <ValidationProvider name="email" rules="required" v-slot="{ errors }">
             <div class="layui-input-inline">
               <input
                 type="text"
@@ -30,6 +49,18 @@
               <span class="error_desc">{{ errors[0] }}</span>
             </div>
           </ValidationProvider>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label label-center">昵称</label>
+          <div class="layui-input-inline">
+            <input
+              type="text"
+              v-model="nickname"
+              placeholder="请输入昵称"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label label-center">密码</label>
@@ -51,6 +82,25 @@
           </ValidationProvider>
         </div>
         <div class="layui-form-item">
+          <label class="layui-form-label label-center">密码确认</label>
+          <ValidationProvider name="confirmPassword" rules="required" v-slot="{ errors }">
+            <div class="layui-input-inline">
+              <input
+                type="password"
+                required
+                v-model="confirmPassword"
+                lay-verify="required"
+                placeholder="请输入密码"
+                autocomplete="off"
+                class="layui-input"
+              />
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+              <span class="error_desc">{{ errors[0] }}</span>
+            </div>
+          </ValidationProvider>
+        </div>
+        <div v-if="false" class="layui-form-item">
           <label class="layui-form-label label-center">验证码</label>
           <ValidationProvider name="code" rules="required" v-slot="{ errors }">
             <div class="layui-input-inline">
@@ -83,18 +133,26 @@
         </div>
       </form>
     </div>
+    <Alert/>
   </div>
 </template>
 
 <script>
+import Alert from '@/components/common/Alert.vue'
 export default {
   name: 'Login',
   data () {
     return {
+      username: '',
       email: '',
+      nickname: '',
       password: '',
+      confirmPassword: '',
       code: ''
     }
+  },
+  components: {
+    Alert
   }
 }
 </script>

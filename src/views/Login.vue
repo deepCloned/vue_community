@@ -12,16 +12,16 @@
         </ul>
       </div>
       <form class="layui-form login-content">
-        <div class="layui-form-item">
+        <div v-show="type === 'username'" class="layui-form-item">
           <label class="layui-form-label label-center">用户名</label>
-          <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
+          <ValidationProvider name="username" rules="required" v-slot="{ errors }">
             <div class="layui-input-inline">
               <input
                 type="text"
                 required
-                v-model="email"
+                v-model="username"
                 lay-verify="required"
-                placeholder="请输入邮箱"
+                placeholder="请输入用户名"
                 autocomplete="off"
                 class="layui-input"
               />
@@ -31,7 +31,7 @@
             </div>
           </ValidationProvider>
         </div>
-        <div class="layui-form-item">
+        <div v-show="type === 'username'" class="layui-form-item">
           <label class="layui-form-label label-center">密码</label>
           <ValidationProvider name="password" rules="required|password" v-slot="{ errors }">
             <div class="layui-input-inline">
@@ -50,7 +50,26 @@
             </div>
           </ValidationProvider>
         </div>
-        <div class="layui-form-item">
+        <div v-show="type === 'email'" class="layui-form-item">
+          <label class="layui-form-label label-center">邮箱</label>
+          <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                required
+                v-model="email"
+                lay-verify="required"
+                placeholder="请输入邮箱"
+                autocomplete="off"
+                class="layui-input"
+              />
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+              <span class="error_desc">{{ errors[0] }}</span>
+            </div>
+          </ValidationProvider>
+        </div>
+        <div v-show="type === 'email'" class="layui-form-item">
           <label class="layui-form-label label-center">验证码</label>
           <ValidationProvider name="code" rules="required" v-slot="{ errors }">
             <div class="layui-input-inline">
@@ -64,7 +83,6 @@
                 class="layui-input"
               />
             </div>
-            <div @click="getCode" v-html="svgData" class="svg-data"></div>
             <div class="layui-form-mid layui-word-aux">
               <span class="error_desc">{{ errors[0] }}</span>
             </div>
@@ -80,38 +98,50 @@
             </button>
           </div>
         </div>
+        <div class="login-type">
+          <span
+            v-show="type === 'username'"
+            class="type"
+            @click="setLoginType('email')">
+            使用其他方式登录
+          </span>
+          <span
+            v-show="type === 'email'"
+            class="type"
+            @click="setLoginType('username')">
+            帐号密码登录
+          </span>
+        </div>
       </form>
     </div>
+    <button @click="handleShowAlert">get login</button>
   </div>
 </template>
 
 <script>
 import auth from '@/model/auth'
-import { v4 as uuidv4 } from 'uuid'
 export default {
   name: 'Login',
   data () {
     return {
-      email: '1583526343@qq.com',
-      password: '123123111',
+      username: '',
+      password: '',
+      email: '',
       code: '',
-      sid: '',
-      svgData: ''
+      type: 'username'
     }
   },
   methods: {
-    getCode () {
-      this.getSid()
-      console.log(this.sid)
-      const params = {
-        sid: this.sid
-      }
-      auth.getCode(params).then(res => {
-        console.log(res)
-        this.code = res.data.text
-        this.svgData = res.data.data
-      }).catch(err => {
-        console.log(err)
+    handleShowAlert () {
+      this.$confirm({
+        title: '确认框',
+        message: '是否确认输入',
+        success: () => {
+          console.log('点击了确认')
+        },
+        fail: () => {
+          console.log('点击了取消')
+        }
       })
     },
     // get login
@@ -124,34 +154,15 @@ export default {
       }
       auth.postLogin(requestData).then(res => {
         console.log(res)
-        localStorage.removeItem('sid')
-        if (res.code === '0000') {
-          console.log('登录成功')
-        } else {
-          console.log(res.msg)
-          this.getSid()
-          this.getCode()
-        }
       }).catch(err => {
         console.log(err)
       })
     },
-    // 获取 uuid
-    getSid () {
-      if (localStorage.getItem('sid')) {
-        this.sid = localStorage.getItem('sid')
-      } else {
-        const sid = uuidv4()
-        localStorage.setItem('sid', sid)
-        this.sid = sid
-      }
+    setLoginType (type) {
+      this.type = type
     }
   },
   created () {
-    this.getCode()
-    setTimeout(() => {
-      this.postLogin()
-    }, 10000)
   }
 }
 </script>
@@ -198,6 +209,15 @@ export default {
           position: relative;
           top: -10px;
           cursor: pointer;
+        }
+        /* 切换登录方式 */
+        .login-type{
+          margin-left: 30px;
+          margin-top: -5px;
+          span{
+            cursor: pointer;
+            color: #007fff;
+          }
         }
       }
     }
